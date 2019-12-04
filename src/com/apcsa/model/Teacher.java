@@ -16,8 +16,20 @@ public class Teacher extends User {
         this.lastName = lastName;
     }
     
+    public void viewEnrollmentByCourse() {
+    	//do shit
+    }
+    
     public void addAssignment() {
-    	return null;
+    	//do shit
+    }
+    
+    public void deleteAssignment() {
+    	//do shit
+    }
+    
+    public void enterGrade() {
+    	//do shit
     }
     
 }
