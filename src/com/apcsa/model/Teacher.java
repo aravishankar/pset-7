@@ -9,7 +9,7 @@ public class Teacher extends User {
     private String firstName;
     private String lastName;
     
-    public teacher(int teacherId, int departmentId, String firstName, String lastName) {
+    public Teacher(int teacherId, int departmentId, String firstName, String lastName) {
         this.teacherId = teacherId;
         this.departmentId = departmentId;
     	this.firstName = firstName;

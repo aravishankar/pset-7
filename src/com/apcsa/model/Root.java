@@ -7,5 +7,7 @@ public class Root extends User {
     private int rootUserId;
     private String firstName;
     private String lastName;
+    
+    
 
 }
