@@ -94,7 +94,7 @@ public class PowerSchool {
         return null;
     }
     
-    public static void createPassword(String username, String password) {
+    public static void changePassword(String username, String password) {
     	try (Connection conn = getConnection()) { 	   
     		
                        int isChanged = updatePassword(conn, username, Utils.getHash(password));
