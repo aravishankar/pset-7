@@ -1,7 +1,14 @@
 package com.apcsa.controller;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.Scanner;
 import com.apcsa.data.PowerSchool;
+import com.apcsa.data.QueryUtils;
 import com.apcsa.model.User;
 
 public class Application {
@@ -48,15 +55,29 @@ public class Application {
                     ? PowerSchool.getTeacher(activeUser) : activeUser.isStudent()
                     ? PowerSchool.getStudent(activeUser) : activeUser.isRoot()
                     ? activeUser : null;
-
+                    
+                if (isFirstLogin()) {
+                	System.out.println("first login");
+                }
+                    
                 if (isFirstLogin() && !activeUser.isRoot()) {
                     // first-time users need to change their passwords from the default provided
+                	System.out.print("Enter new password: ");
+                    String newPassword = in.next();
+         
+                    PowerSchool.createPassword(username, newPassword);
+                    
                 }
 
                 // create and show the user interface
                 //
                 // remember, the interface will be difference depending on the type
                 // of user that is logged in (root, administrator, teacher, student)
+                
+                System.out.println("I am logged in");
+                System.out.println(username);
+                System.out.println(password);
+                
             } else {
                 System.out.println("\nInvalid username and/or password.");
             }
@@ -99,5 +120,51 @@ public class Application {
         Application app = new Application();
 
         app.startup();
+    }
+    
+    public int getSelectionStudent() {
+    	System.out.println("[1] View course grades.");
+    	System.out.println("[2] View assignment grades by course.");
+    	System.out.println("[3] Change password.");
+    	System.out.println("[4] Logout.");
+    	
+    	return in.next();
+
+    }
+    
+    
+    public int getSelectionTeacher() {
+    	System.out.println("[1] View enrollment by course.");
+    	System.out.println("[2] Add assignment.");
+    	System.out.println("[3] Delete assignment.");
+    	System.out.println("[4] Enter grade.");
+    	System.out.println("[5] Change password.");
+    	System.out.println("[6] Logout.");
+    	
+    	return in.next();
+
+    }
+    
+    public int getselectionAdministrator() {
+    	System.out.println("[1] View faculty.");
+    	System.out.println("[2] View faculty by department.");
+    	System.out.println("[3] View student enrollment.");
+    	System.out.println("[4] View student enrollment by grade.");
+    	System.out.println("[5] View student enrollment by course.");
+    	System.out.println("[6] Change password.");
+    	System.out.println("[7] Logout.");
+
+    	return in.next();
+    	
+    }
+    
+    public int getSelectionRoot() {
+    	System.out.println("[1] Reset user password.");
+    	System.out.println("[2] Factory reset database.");
+    	System.out.println("[3] Logout.");
+    	System.out.println("[4] Shutdown.");
+    	
+    	return in.next();
+
     }
 }

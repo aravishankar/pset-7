@@ -43,18 +43,6 @@ public class User {
         this.password = password;
         this.lastLogin = lastLogin;
     }
-    
-    public void login() {
-    	//do shit
-    }
-    
-    public void changePassword() {
-    	//do shit
-    }
-    
-    public void logout() {
-    	//do shit
-    }
 
     /**
      * @return userId
