@@ -220,6 +220,17 @@ public class Application {
         app.startup();
     }
     
+    public int changePassword() {
+    	System.out.print("Enter current password: ");
+    	String checkPassword = in.next();
+    	if (checkPassword.equals("bruh")) {
+    		//shit
+    	}
+    	
+    	return 1;
+    	
+    }
+    
     public int getSelectionStudent() {
     	System.out.println();
     	System.out.println("[1] View course grades.");

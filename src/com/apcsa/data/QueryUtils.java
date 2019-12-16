@@ -59,4 +59,14 @@ public class QueryUtils {
     		"UPDATE users " +
     	        "SET auth = ? " +
     	    "WHERE username = ?";
+    
+    public static final String GET_FACULTY =
+            "SELECT * FROM teachers " +
+                "ORDER BY last_name ASC";
+    
+    public static final String GET_FACULTY_DEPARMENT =
+            "SELECT * FROM teachers " +
+                "WHERE department_id = ?" +
+            		"ORDER BY last_name ASC";
+    
 }

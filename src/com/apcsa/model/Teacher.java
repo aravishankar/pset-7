@@ -11,14 +11,25 @@ public class Teacher extends User {
     private String firstName;
     private String lastName;
 
+//    public Teacher(User user, ResultSet rs) throws SQLException {
+//        super(user.getUserId(), user.getAccountType(), user.getUsername(), user.getPassword(), user.getLastLogin());
+//
+//        this.teacherId = rs.getInt("teacher_id");
+//        this.departmentId = rs.getInt("department_id");
+//        this.firstName = rs.getString("first_name");
+//        this.lastName = rs.getString("last_name");
+//    }
+    
     public Teacher(User user, ResultSet rs) throws SQLException {
-        super(user.getUserId(), user.getAccountType(), user.getUsername(), user.getPassword(), user.getLastLogin());
-
+        super(user);
+        
         this.teacherId = rs.getInt("teacher_id");
         this.departmentId = rs.getInt("department_id");
         this.firstName = rs.getString("first_name");
         this.lastName = rs.getString("last_name");
+        this.departmentName = rs.getString("department_id");
     }
+    
 
     public String getFirstName() {
         return this.firstName;
