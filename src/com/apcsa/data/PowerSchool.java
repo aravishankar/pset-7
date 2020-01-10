@@ -12,6 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
 import com.apcsa.controller.Utils;
 import com.apcsa.model.Administrator;
@@ -93,21 +94,6 @@ public class PowerSchool {
 
         return null;
     }
-    
-    public static void changePassword(String username, String password) {
-    	try (Connection conn = getConnection()) { 	   
-    		
-                       int isChanged = updatePassword(conn, username, Utils.getHash(password));
-
-                       if (isChanged != 1) {
-                           System.err.println("Unable to successfully create password.");
-                       }
-                   
-               
-           } catch (SQLException e) {
-               e.printStackTrace();
-           }
-    }
 
     /**
      * Returns the administrator account associated with the user.
@@ -183,6 +169,51 @@ public class PowerSchool {
 
         return user;
     }
+    
+    /**
+     * Retrieves all faculty members.
+     * 
+     * @return a list of teachers
+     */
+
+    public static ArrayList<Teacher> getTeachers() {
+        ArrayList<Teacher> teachers = new ArrayList<Teacher>();
+        
+        try (Connection conn = getConnection();
+             Statement stmt = conn.createStatement()) {
+                        
+            try (ResultSet rs = stmt.executeQuery(QueryUtils.GET_ALL_TEACHERS_SQL)) {
+                while (rs.next()) {
+                    teachers.add(new Teacher(rs));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+        return teachers;
+    }
+    
+    /**
+     * Resets a user's password.
+     * 
+     * @param username the user's username
+     */
+    
+    public static void resetPassword(String username) {
+        //
+        // get a connection to the database
+        // create a prepared statement (both of thses should go in a try-with-resources statement)
+        //
+        // insert parameters into the prepared statement
+        //      - the user's hashed username
+        //      - the user's plaintext username
+        //
+        // execute the update statement
+        //
+    }
+    
+    /////// PRIVATE METHODS ///////////////////////////////////////////////////////////////
 
     /*
      * Establishes a connection to the database.
@@ -226,31 +257,6 @@ public class PowerSchool {
             return -1;
         }
     }
-    
-    private static int updatePassword(Connection conn, String username, String password) {
-        try (PreparedStatement stmt = conn.prepareStatement(QueryUtils.UPDATE_PASSWORD_SQL)) {
-
-            conn.setAutoCommit(false);
-            stmt.setString(1, password);
-            stmt.setString(2, username);
-
-            if (stmt.executeUpdate() == 1) {
-                conn.commit();
-
-                return 1;
-            } else {
-                conn.rollback();
-
-                return -1;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-
-            return -1;
-        }
-        
-    }
-    
 
     /*
      * Builds the database. Executes a SQL script from a configuration file to

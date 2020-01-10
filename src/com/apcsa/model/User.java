@@ -3,7 +3,6 @@ package com.apcsa.model;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-
 public class User {
 
     private int userId;
@@ -26,6 +25,21 @@ public class User {
              rs.getString("last_login")
         );
     }
+    
+    /**
+     * Creates an instance of the User class.
+     * 
+     * @param user an existing User object
+     */
+    
+    public User(User user) {
+        this(user.getUserId(),
+             user.getAccountType(),
+             user.getUsername(),
+             user.getPassword(),
+             user.getLastLogin()
+        );
+    }
 
     /**
      * Creates an instance of the User class.
@@ -39,22 +53,11 @@ public class User {
 
     public User(int userId, String accountType, String username, String password, String lastLogin) {
         this.userId = userId;
-        this.accountType = accountType.toLowerCase();
+        this.accountType = (accountType == null) ? null : accountType.toLowerCase();
         this.username = username;
         this.password = password;
         this.lastLogin = lastLogin;
     }
-    
-    public User(User user) {
-        this(user.getUserId(),
-             user.getAccountType(),
-             user.getUsername(),
-             user.getPassword(),
-             user.getLastLogin()
-        );
-    }
-    
-    
 
     /**
      * @return userId

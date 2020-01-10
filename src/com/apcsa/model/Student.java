@@ -13,18 +13,14 @@ public class Student extends User {
     private double gpa;
     private String firstName;
     private String lastName;
-
-//    public Student(User user, ResultSet rs) throws SQLException {
-//        super(user.getUserId(), user.getAccountType(), user.getUsername(), user.getPassword(), user.getLastLogin());
-//
-//        this.studentId = rs.getInt("user_id");
-//        this.classRank = rs.getInt("class_rank");
-//        this.gradeLevel = rs.getInt("grade_level");
-//        this.graduationYear = rs.getInt("graduation");
-//        this.gpa = rs.getDouble("gpa");
-//        this.firstName = rs.getString("first_name");
-//        this.lastName = rs.getString("last_name");
-//    }
+    
+    /**
+     * Creates an instance of the Student class.
+     * 
+     * @param user
+     * @param rs
+     * @throws SQLException
+     */
     
     public Student(User user, ResultSet rs) throws SQLException {
         super(user);
@@ -37,9 +33,25 @@ public class Student extends User {
         this.firstName = rs.getString("first_name");
         this.lastName = rs.getString("last_name");
     }
-
-    public String getFirstName() {
-        return this.firstName;
+    
+    //
+    // you'll likely need to define and implement a combination of getters and setters. you won't
+    // necessarily need a getter and setter for every instance variable, but you will need some.
+    //
+    
+    /**
+     * @return gpa
+     */
+    
+    public double getGpa() {
+        return gpa;
     }
-
+    
+    /**
+     * @param classRank
+     */
+    
+    public void setClassRank(int classRank) {
+        this.classRank = classRank;
+    }
 }

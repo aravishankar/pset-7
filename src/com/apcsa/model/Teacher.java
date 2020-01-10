@@ -10,15 +10,15 @@ public class Teacher extends User {
     private int departmentId;
     private String firstName;
     private String lastName;
+    private String departmentName;
 
-//    public Teacher(User user, ResultSet rs) throws SQLException {
-//        super(user.getUserId(), user.getAccountType(), user.getUsername(), user.getPassword(), user.getLastLogin());
-//
-//        this.teacherId = rs.getInt("teacher_id");
-//        this.departmentId = rs.getInt("department_id");
-//        this.firstName = rs.getString("first_name");
-//        this.lastName = rs.getString("last_name");
-//    }
+    /**
+     * Creates an instance of the Teacher class.
+     * 
+     * @param user
+     * @param rs
+     * @throws SQLException
+     */
     
     public Teacher(User user, ResultSet rs) throws SQLException {
         super(user);
@@ -30,26 +30,43 @@ public class Teacher extends User {
         this.departmentName = rs.getString("department_id");
     }
     
-
-    public String getFirstName() {
-        return this.firstName;
-    }
-
+    /**
+     * Creates an instance of the Teacher class.
+     * 
+     * @param rs
+     * @throws SQLException
+     */
     
-    public void viewEnrollmentByCourse() {
-    	//do shit
-    }
-    
-    public void addAssignment() {
-    	//do shit
-    }
-    
-    public void deleteAssignment() {
-    	//do shit
-    }
-    
-    public void enterGrade() {
-    	//do shit
+    public Teacher(ResultSet rs) throws SQLException {
+        super(-1, "teacher", null, null, null);
+        
+        this.teacherId = rs.getInt("teacher_id");
+        this.departmentId = rs.getInt("department_id");
+        this.firstName = rs.getString("first_name");
+        this.lastName = rs.getString("last_name");
+        this.departmentName = rs.getString("title");
     }
     
+    //
+    // you'll likely need to define and implement a combination of getters and setters. you won't
+    // necessarily need a getter and setter for every instance variable, but you will need some.
+    //
+    
+    /**
+     * @return departmentName
+     */
+    
+    public String getDepartmentName() {
+        return departmentName;
+    }
+    
+    /**
+     * Retrieves the student's name formatted as LAST, FIRST.
+     * 
+     * @return the formatted name
+     */
+    
+    public String getName() {
+        return lastName + ", " + firstName;
+    }
 }
