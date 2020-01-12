@@ -26,10 +26,15 @@ public class QueryUtils {
      * Updates the last login timestamp each time a user logs into the system.
      */
 
-    public static final String UPDATE_LAST_LOGIN_SQL =
+    public static final String RESET_LAST_LOGIN_SQL =
         "UPDATE users " +
-            "SET last_login = ? " +
+            "SET last_login = '0000-00-00 00:00:00.000' " +
         "WHERE username = ?";
+    
+    public static final String UPDATE_LAST_LOGIN_SQL =
+            "UPDATE users " +
+                "SET last_login = ? " +
+            "WHERE username = ?";  
     
     /*
      * Retrieves an administrator associated with a user account.
@@ -86,4 +91,49 @@ public class QueryUtils {
             "teachers.department_id = departments.department_id " +
         "ORDER BY " +
             "last_name, first_name";
+    
+    
+    public static final String GET_ALL_TEACHERS_BY_DEPARTMENT_SQL =
+            "SELECT * FROM " +
+                "teachers, departments " +
+            "WHERE " +
+                "teachers.department_id = ? AND teachers.department_id = departments.department_id " +
+            "ORDER BY " +
+                "last_name, first_name";
+    
+    public static final String GET_ALL_STUDENTS_SQL =
+            "SELECT * FROM " +
+                "students " +
+            "ORDER BY " +
+                "last_name, first_name";
+    
+    public static final String GET_ALL_STUDENTS_BY_GRADE_SQL =
+    		"SELECT * FROM " +
+                    "students " +
+                "WHERE " +
+                    "grade_level = ? " +
+                "ORDER BY " +
+                    "last_name, first_name";
+    
+    public static final String GET_ALL_STUDENTS_BY_COURSE_SQL =
+    		"SELECT * FROM " +
+    	            "students, courses, course_grades " +
+    	        "WHERE "+
+    	            "courses.course_no = ? AND courses.course_id = course_grades.course_id AND course_grades.student_id = students.student_id " +
+    	        "ORDER BY " +
+    	            "last_name, first_name";
+    
+    public static final String GET_NUMBER_OF_COURSES =
+            "SELECT COUNT(*) FROM courses";
+
+    public static final String GET_NUMBER_OF_ASSIGNMENTS = 
+			"SELECT COUNT(*) FROM assignments";
+    
+    public static final String GET_COURSE_NUMBER =
+            "SELECT * FROM courses " +
+                "WHERE course_id = ?";
+    
+    public static final String GET_COURSE_ID =
+            "SELECT * FROM courses " +
+                "WHERE course_no = ?";
 }

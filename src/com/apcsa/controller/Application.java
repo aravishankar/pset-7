@@ -19,7 +19,6 @@ public class Application {
     enum TeacherAction { ENROLLMENT, ADD, DELETE, GRADE, PASSWORD, LOGOUT }
     enum StudentAction { COURSE, ASSIGNMENT, PASSWORD, LOGOUT }
 
-
     
     /**
      * Creates an instance of the Application class, which is responsible for interacting with the
@@ -212,7 +211,7 @@ public class Application {
         //      print success message
         //
     	
-    	if (Utils.confirm(in, "\nAre you sure you want to reset all settings and data? (y/n)")) {
+    	if (Utils.confirm(in, "\nAre you sure you want to reset all settings and data? (y/n) ")) {
     		try {
    	            PowerSchool.initialize(true);
    	            System.out.println("\nSuccessfully reset database.");
@@ -308,6 +307,22 @@ public class Application {
         // otherwise...
         //      print the list of teachers by name an department (just like last time)
         //
+    	
+    	int selection = getDepartmentSelection();
+    	
+    	ArrayList<Teacher> teachers = PowerSchool.getTeachersByDepartment(selection);
+        
+        if (teachers.isEmpty()) {
+            System.out.println("\nNo teachers to display.");
+        } else {
+            System.out.println();
+            
+            int i = 1;
+            for (Teacher teacher : teachers) {
+                System.out.println(i++ + ". " + teacher.getName() + " / " + teacher.getDepartmentName());
+            }
+        }
+    	
     }
     
     /*
@@ -323,6 +338,19 @@ public class Application {
         // otherwise...
         //      print the list of students by name and graduation year
         //
+    	
+    	ArrayList<Student> students = PowerSchool.getStudents();
+        
+        if (students.isEmpty()) {
+            System.out.println("\nNo students to display.");
+        } else {
+            System.out.println();
+            
+            int i = 1;
+            for (Student student : students) {
+                System.out.println(i++ + ". " + student.getName() + " / " + student.getGraduationYear());
+            } 
+        }
     }
     
     /*
@@ -339,6 +367,20 @@ public class Application {
         // otherwise...
         //      print the list of students by name and class rank
         //
+    	
+    	ArrayList<Student> students = Utils.updateRanks(PowerSchool.getStudentsByGrade(getGradeSelection()));
+    	
+    	if (students.isEmpty()) {
+            System.out.println("\nNo students to display.");
+        } else {
+            System.out.println();
+            
+            int i = 1;
+            for (Student student : students) {
+                System.out.println(i++ + ". " + student.getName() + " / " + "#" + student.getClassRank());
+            } 
+        }
+    	
     }
     
     /*
@@ -355,7 +397,39 @@ public class Application {
         // otherwise...
         //      print the list of students by name and grade point average
         //
+    	
+    	String courseNo = "";
+    	
+		try {
+			courseNo = getCourseSelection();
+		} catch(SQLException e) {
+		}
+		
+		ArrayList<Student> students = PowerSchool.getStudentsByCourse(courseNo);
+    	
+    	if (students.isEmpty()) {
+            System.out.println("\nNo students to display.");
+        } else {
+            System.out.println();
+            
+            int i = 1;
+            for (Student student : students) {
+                System.out.println(i++ + ". " + student.getName() + " / " + standardizeGPA(student));
+            } 
+            
+            
+        }
+    	
     }
+    
+    private String standardizeGPA(Student student) {
+		double GPA = student.getGpa();
+		if(GPA == -1) {
+			return "--";
+		}else {
+			return String.valueOf(GPA);
+		}
+	}
     
     /////// TEACHER METHODS /////////////////////////////////////////////////////////
 
@@ -540,7 +614,7 @@ public class Application {
             System.out.print("\nCourse No.: ");
             courseNo = in.next();
             
-            if (/* is a valid course number */) {
+            if (validateCourse(courseNo)) {
                 valid = true;
             } else {
                 System.out.println("\nCourse not found.");
@@ -549,6 +623,16 @@ public class Application {
         
         return courseNo;
     }
+    
+    private boolean validateCourse(String courseId) {
+    	boolean isValid = false;
+		for(int i=1; i <  PowerSchool.getNumberOfCourses(); i++) {
+			if(PowerSchool.getCourseNumber(i).equals(courseId)) {
+				isValid = true;
+			}
+		}
+		return isValid;
+	}
     
     /////// ALL USER METHODS //////////////////////////////////////////////////////////////
     

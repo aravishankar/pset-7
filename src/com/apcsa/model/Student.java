@@ -34,6 +34,18 @@ public class Student extends User {
         this.lastName = rs.getString("last_name");
     }
     
+    public Student(ResultSet rs) throws SQLException {
+    	super(-1, "student", null, null, null);
+    	
+    	this.studentId = rs.getInt("student_id");
+    	this.classRank = rs.getInt("class_rank");
+    	this.gradeLevel = rs.getInt("grade_level");
+    	this.graduationYear = rs.getInt("graduation");
+    	this.gpa = rs.getDouble("gpa");
+    	this.firstName = rs.getString("first_name");
+    	this.lastName = rs.getString("last_name");
+    }
+    
     //
     // you'll likely need to define and implement a combination of getters and setters. you won't
     // necessarily need a getter and setter for every instance variable, but you will need some.
@@ -54,4 +66,24 @@ public class Student extends User {
     public void setClassRank(int classRank) {
         this.classRank = classRank;
     }
+    
+    public String getFirstName() {
+		return firstName;
+	}
+	
+	public double getStudentId() {
+        return studentId;
+    }
+	
+	public String getName() {
+        return lastName + ", " + firstName;
+    }
+	
+	public int getGraduationYear() {
+		return graduationYear;
+	}
+	
+	public int getClassRank() {
+		return classRank;
+	}
 }
