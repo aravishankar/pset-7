@@ -59,6 +59,11 @@ public class QueryUtils {
      * Resets another user's password and last login timestamp.
      */
     
+    public static final String UPDATE_AUTH_SQL =
+            "UPDATE users " +
+                "SET auth = ? " +
+            "WHERE username = ?";
+    
     //
     // upset the users table
     // two columns need to be updated

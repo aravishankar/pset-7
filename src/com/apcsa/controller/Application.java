@@ -64,6 +64,11 @@ public class Application {
     
                     if (isFirstLogin() && !activeUser.isRoot()) {
                         // first-time users need to change their passwords from the default provided
+                    	System.out.print("\nEnter new password: ");
+                        String newPassword = in.next();
+                        PowerSchool.changePassword(username, newPassword);
+                        System.out.println("\nSuccessfully changed password.");
+
                     }
     
                     createAndShowUI();
@@ -112,6 +117,10 @@ public class Application {
             showRootUI();
         } else if (activeUser.isAdministrator()) {
             showAdministratorUI();
+        } else if (activeUser.isTeacher()) {
+            showTeacherUI();
+        } else if (activeUser.isStudent()) {
+            showStudentUI();
         } else {
             // TODO - add cases for teacher, student, and unknown
         }
@@ -173,6 +182,21 @@ public class Application {
         //      call database method to reset password for username
         //      print success message
         //
+    	
+    	System.out.print("\nUsername: ");
+        String username = in.next();
+        
+        if (Utils.confirm(in, "\nAre you sure you want to reset the password for " + username + "?  (y/n) ")) {
+            if (in != null) {
+                if (PowerSchool.resetPassword(username)) {
+                    PowerSchool.resetLastLogin(username);
+                    System.out.println("\nSuccessfully reset password for " + username + ".");
+                } else {
+                    System.out.println("\nPassword reset failed");
+                }
+            }
+        }
+    	
     }
     
     /*
@@ -187,12 +211,22 @@ public class Application {
         //      call database initialize method with parameter of true
         //      print success message
         //
+    	
+    	if (Utils.confirm(in, "\nAre you sure you want to reset all settings and data? (y/n)")) {
+    		try {
+   	            PowerSchool.initialize(true);
+   	            System.out.println("\nSuccessfully reset database.");
+   	        } catch (Exception e) {
+   	            e.printStackTrace();
+   	        }
+    	}
+    	
     }
     
     /////// ADMINISTRATOR METHODS /////////////////////////////////////////////////////////
     
     /*
-     * Displays an interface for root users.
+     * Displays an interface for admin users.
      */
     
     private void showAdministratorUI() {
@@ -211,7 +245,7 @@ public class Application {
     }
     
     /*
-     * Retrieves a root user's menu selection.
+     * Retrieves an administrator user's menu selection.
      * 
      * @return the menu selection
      */
@@ -323,6 +357,125 @@ public class Application {
         //
     }
     
+    /////// TEACHER METHODS /////////////////////////////////////////////////////////
+
+    /*
+     * Displays an interface for admin users.
+     */
+    
+    private void showTeacherUI() {
+        while (activeUser != null) {
+            switch (getTeacherMenuSelection()) {
+                case ENROLLMENT: viewEnrollmentByCourse(); break;
+                case ADD: addAssignment(); break;
+                case DELETE: deleteAssignment(); break;
+                case GRADE: enterGrade(); break;
+                case PASSWORD: changePassword(false); break;
+                case LOGOUT: logout(); break;
+                default: System.out.println("\nInvalid selection."); break;
+            }
+        }
+    }
+    
+    /*
+     * Retrieves an administrator user's menu selection.
+     * 
+     * @return the menu selection
+     */
+    
+    private TeacherAction getTeacherMenuSelection() {
+        System.out.println();
+        
+        System.out.println("[1] View enrollment by course.");
+        System.out.println("[2] Add assignment.");
+        System.out.println("[3] Delete assignment.");
+        System.out.println("[4] Enter grade.");
+        System.out.println("[5] Change password.");
+        System.out.println("[6] Logout.");
+        System.out.print("\n::: ");
+        
+        switch (Utils.getInt(in, -1)) {
+            case 1: return TeacherAction.ENROLLMENT;
+            case 2: return TeacherAction.ADD;
+            case 3: return TeacherAction.DELETE;
+            case 4: return TeacherAction.GRADE;
+            case 5: return TeacherAction.PASSWORD;
+            case 6: return TeacherAction.LOGOUT;
+        }
+        
+        return null;
+    }
+    
+    private void viewEnrollmentByCourse() {
+		// TODO Auto-generated method stub
+		
+	}
+    
+    private void addAssignment() {
+		// TODO Auto-generated method stub
+		
+	}
+    
+    private void deleteAssignment() {
+		// TODO Auto-generated method stub
+		
+	}
+    
+    private void enterGrade() {
+		// TODO Auto-generated method stub
+		
+	}
+    
+    /////// STUDENT METHODS /////////////////////////////////////////////////////////
+
+    
+    private void showStudentUI() {
+        while (activeUser != null) {
+            switch (getStudentMenuSelection()) {
+                case COURSE: viewCourseGrades(); break;
+                case ASSIGNMENT: viewAssignmentGradesByCourse(in); break;
+                case PASSWORD: changePassword(false); break;
+                case LOGOUT: logout(); break;
+                default: System.out.println("\nInvalid selection."); break;
+            }
+        }
+    }
+    
+    /*
+     * Retrieves a teacher's menu selection.
+     * 
+     * @return the menu selection
+     */
+
+	private StudentAction getStudentMenuSelection() {
+        System.out.println();
+        
+        System.out.println("[1] View course grades.");
+        System.out.println("[2] View assignment grades by course.");
+        System.out.println("[3] Change password.");
+        System.out.println("[4] Logout.");
+        System.out.print("\n::: ");
+
+        switch (Utils.getInt(in, -1)) {
+            case 1: return StudentAction.COURSE;
+            case 2: return StudentAction.ASSIGNMENT;
+            case 3: return StudentAction.PASSWORD;
+            case 4: return StudentAction.LOGOUT;
+        }
+        
+        return null;
+    }
+	
+	private void viewCourseGrades() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void viewAssignmentGradesByCourse(Scanner in) {
+	// TODO Auto-generated method stub
+		
+	}
+    
     /////// SECONDARY MENUS ///////////////////////////////////////////////////////////////
     
     /*
@@ -415,6 +568,21 @@ public class Application {
         //      this requires three pieces of information: the username, the old password, and the new password
         //      the old password will either be something the use entered (if it isn't his or her first login) or
         //      it'll be the same as their username
+    	
+    	if (firstLogin == false) {
+    		System.out.print("\nEnter current password: ");
+    		String currentPassword = in.next();
+    		System.out.print("Enter a new password: ");
+            String newPassword = in.next();
+            
+            if (activeUser.getPassword().equals(Utils.getHash(currentPassword))) {
+            	PowerSchool.changePassword(activeUser.getUsername(), newPassword);
+            } else {
+            	System.out.println("\nInvalid current password.");
+            }
+            
+    	}
+    	
     }
     
     /*
@@ -428,6 +596,14 @@ public class Application {
         // if confirmed...
         //      set activeUser to null
         //
+    	
+    	System.out.println();
+        
+        if (Utils.confirm(in, "Are you sure? (y/n) ")) {
+    		
+        	activeUser = null;
+            
+        }
     }
     
     /////// SHUTDOWN METHODS //////////////////////////////////////////////////////////////
