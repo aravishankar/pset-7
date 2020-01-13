@@ -286,6 +286,22 @@ public class PowerSchool {
 		return courses;
 	}
     
+    public static int assignmentRows() {
+    	try (Connection conn = getConnection();
+    			PreparedStatement stmt = conn.prepareStatement(QueryUtils.PREVIOUS_ASSIGNMENT_ID)) {
+                  
+    		try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("count(*)");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return 1;
+    }
+    
     public static int getCourseId(String courseNumber) {
     	try (Connection conn = getConnection();
                 PreparedStatement stmt = conn.prepareStatement(QueryUtils.GET_COURSE_ID)) {
@@ -406,27 +422,39 @@ public class PowerSchool {
 		return pointValues;
 	}
     
-    public static ArrayList<String> getAssignmentIds(int courseId, int markingPeriod) {
-		ArrayList<String> assignmentsIds = new ArrayList<String>();
-		
-		try (Connection conn = getConnection();
-       		 PreparedStatement stmt = conn.prepareStatement(QueryUtils.GET_ASSIGNMENTS)) {
-			
-			conn.setAutoCommit(false);
-			stmt.setInt(1, courseId);
-            stmt.setInt(2, markingPeriod); 
-            
-            try (ResultSet rs = stmt.executeQuery()) {
-           	 while(rs.next()) {
-           		assignmentsIds.add(rs.getString("assignment_id"));                 
-           	 }
-            }
+    public static ArrayList<String> getAssignmentIds() {
+    	ArrayList<String> assignmentIds = new ArrayList<String>();
+    	try (Connection conn = getConnection();
+     			PreparedStatement stmt = conn.prepareStatement(QueryUtils.GET_ASSIGNMENT_IDS)) {
+     			
+     			try (ResultSet rs = stmt.executeQuery()) {
+     				while (rs.next()) {
+                  	 assignmentIds.add(rs.getString("assignment_id"));
+     				}
+     			}	
+     		return assignmentIds;
         } catch (SQLException e) {
             e.printStackTrace();
         }
-		
-		return assignmentsIds;
-	}
+     	return assignmentIds;
+    }
+    
+    public static ArrayList<String> acquireAssignmentIds() {
+    	ArrayList<String> assignmentIds = new ArrayList<String>();
+    	try (Connection conn = getConnection();
+     			PreparedStatement stmt = conn.prepareStatement(QueryUtils.GET_ASSIGNMENT_IDS)) {
+     			
+     			try (ResultSet rs = stmt.executeQuery()) {
+     				while (rs.next()) {
+                  	 assignmentIds.add(rs.getString("assignment_id"));
+     				}
+     			}	
+     		return assignmentIds;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+     	return assignmentIds;
+    }
     
     public static ArrayList<String> getStudentsByCourseWithoutObject(String courseNo) {
         ArrayList<String> students = new ArrayList<String>();
@@ -580,6 +608,8 @@ public class PowerSchool {
              return assignments;
         } catch (SQLException e) {
             e.printStackTrace();
+            System.out.println("problem with get grade by mp!");
+
         }
          return assignments;
     }
@@ -601,6 +631,7 @@ public class PowerSchool {
              return totalGrades;
         } catch (SQLException e) {
             e.printStackTrace();
+            System.out.println("problem with get grade");
         }
          return totalGrades;
     }
@@ -1179,26 +1210,10 @@ public class PowerSchool {
         return 1;
     }
     
-    public static int checkGrade(int courseId, int assignmentId, int studentId) {
-    	try (Connection conn = getConnection();
-    			PreparedStatement stmt = conn.prepareStatement(QueryUtils.FIND_GRADE)) {
-                  
-    		stmt.setInt(1, courseId);
-    		stmt.setInt(2, assignmentId);
-    		stmt.setInt(3, studentId);
-    		try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getInt("is_graded");
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return -1;
-    }
-    
-    public static int addAssignmentGrade(int courseId, int assignmentId, int studentId, double pointsEarned, int pointsPossible, int isGraded) {
+    public static int addAssignmentGrade(int courseId, int assignmentId, int studentId, double pointsEarned, int pointsPossible) {
+    	
+    	
+    	
     	try (Connection conn = getConnection();
            	 PreparedStatement stmt = conn.prepareStatement(QueryUtils.ADD_ASSIGNMENT_GRADE)) {
                
@@ -1208,17 +1223,15 @@ public class PowerSchool {
                stmt.setInt(3, studentId);
                stmt.setDouble(4, pointsEarned);
                stmt.setInt(5, pointsPossible);
-               stmt.setInt(6, isGraded);
                
-               if (stmt.executeUpdate() == 1) {
+               stmt.executeUpdate();
                    conn.commit();
                    return 1;
-               } else {
-                   conn.rollback();
-                   return -1;
-               }
+               
            } catch (SQLException e) {
-               return -1;
+//        	   e.printStackTrace();
+//               System.out.println("problem with add grade!");
+        	   return -1;
            }
     }
     

@@ -376,15 +376,9 @@ public class QueryUtils {
         public static final String ROWS_IN_ASSIGNMENT_GRADES =
         		"SELECT count(*) FROM assignment_grades ";
         
-        public static final String FIND_GRADE =
-        		"SELECT is_graded FROM assignment_grades " + 
-        				"WHERE course_id = ? " + 
-        				"AND assignment_id = ? " +
-        				"AND student_id = ?";
-        
         public static final String ADD_ASSIGNMENT_GRADE =
         		"INSERT INTO assignment_grades " +
-        		    "VALUES(?, ?, ?, ?, ?, ?)";
+        		    "VALUES(?, ?, ?, ?, ?)";
         
         public static final String UPDATE_ASSIGNMENT_GRADE = 
         		"UPDATE assignment_grades " +
@@ -392,6 +386,12 @@ public class QueryUtils {
         				"WHERE course_id = ?" +
         				"AND assignment_id = ?" +
         				"AND student_id = ?";
+        
+        public static final String PREVIOUS_ASSIGNMENT_ID =
+        		"SELECT count(*) FROM assignments ";
+        
+        public static final String GET_ASSIGNMENT_IDS =
+        		"SELECT assignment_id FROM assignments ";
         
         
 }

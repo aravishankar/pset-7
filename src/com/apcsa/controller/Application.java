@@ -3,7 +3,6 @@ package com.apcsa.controller;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Scanner;
-import com.apcsa.controller.Application.AdministratorAction;
 import com.apcsa.data.PowerSchool;
 import com.apcsa.model.Student;
 import com.apcsa.model.Teacher;
@@ -497,95 +496,121 @@ public class Application {
 		
 	}
     
-    private void addAssignment() {
-    	int courseId = getCourseId();
-		int assignmentId = getAssignmentId();
-		int markingPeriod = 0;
-		int isMidterm = 0;
-		int isFinal = 0;
-		
-		System.out.println("\nChoose a marking period or exam status.\n");
-		System.out.println("[1] MP1 assignment.");
-        System.out.println("[2] MP2 assignment.");
-        System.out.println("[3] MP3 assignment.");
-        System.out.println("[4] MP4 assignment.");
-        System.out.println("[5] Midterm exam.");
-        System.out.println("[6] Final exam.");
-        System.out.print("\n::: ");
-        int selection = Utils.getInt(in, -1);
-        
-        while (selection <= 0 || selection > 6) {
-        	if (selection <= 0 || selection > 6) {
-            	System.out.println("\nInvalid Selection.");
-       	 	}
+    public void addAssignment() {
+    	
+    	System.out.println("\nChoose a course.\n");
+    	
+    	int departmentId = ((Teacher) activeUser).getDepartmentId();
+    	
+    	ArrayList<String> courses = PowerSchool.getCourses(departmentId);
+    	
+    	for (int i = 0; i <= courses.size()-1; i++) {
+    		System.out.println("[" + (i + 1) + "] " + courses.get(i));
+    		
+    	}
+    	
+    	System.out.print("\n::: ");
+    	int courseSelection = in.nextInt();
+    	
+    	while (courseSelection > courses.size() || courseSelection < 1) {
+    		
+    		System.out.println("\nInvalid selection.");
+    		System.out.println("\nChoose a course.\n");
+    		
+        	for (int i = 0; i <= courses.size()-1; i++) {
+        		System.out.println("[" + (i + 1) + "] " + courses.get(i));
+        		
+        	}
         	
-        	System.out.println("\nChoose a marking period or exam status.\n");
-    		System.out.println("[1] MP1 assignment.");
-            System.out.println("[2] MP2 assignment.");
-            System.out.println("[3] MP3 assignment.");
-            System.out.println("[4] MP4 assignment.");
-            System.out.println("[5] Midterm exam.");
-            System.out.println("[6] Final exam.");
-            System.out.print("\n::: ");
-            selection = Utils.getInt(in, -1);                 
-        }
-        
-        switch (selection) {
-        	case 1:
-        		markingPeriod = 1;
-        		break;
-        	case 2:
-        		markingPeriod = 2;
-        		break;
-        	case 3:
-        		markingPeriod = 3;
-        		break;
-        	case 4:
-        		markingPeriod = 4;
-        		break;
-        	case 5:
-        		markingPeriod = 5;
-        		isMidterm = 1;
-        		break;
-        	case 6:
-        		markingPeriod = 6;
-        		isFinal = 1;
-        		break;
-        }
-        
-        System.out.print("\nAssignment Title: ");
-        String title = in.nextLine(); 
-        int pointValue = 0;
-        
-        do {
-	        System.out.print("Point Value: ");
-	        pointValue = Utils.getInt(in, -1);  
-	        if(pointValue < 1 || pointValue > 101) {
-	        	System.out.println("\nPoint values must be between 1 and 100.\n");
-	        }
-	        
-        } while (pointValue < 1 || pointValue > 101);
-		if (Utils.confirm(in, "\nAre you sure you want to create this assignment? (y/n) ")){
-			if (PowerSchool.addAssignment(courseId, assignmentId, markingPeriod, isMidterm, isFinal, title, pointValue) == 1) {
-				System.out.println("\nSuccessfully created assignment.");
-			} else {
-				System.out.println("\nError creating assignment.");
-			}	
-		}		
-	}
+        	System.out.print("\n::: ");
+        	courseSelection = in.nextInt();
+    	}
+    	
+    	String courseNo = courses.get(courseSelection-1);
+    	int courseId = PowerSchool.getCourseIdFromCourseNo(courseNo);
+    	
+    	printMarkingPeriods();
+    	int markingPeriod = in.nextInt();
+    	
+    	while (markingPeriod > 6 || markingPeriod < 1) {
+    		
+    		System.out.println("\nInvalid selection.");
+    		printMarkingPeriods();
+        	markingPeriod = in.nextInt();
+    	}
+    	
+    	int isMidterm = 0;
+    	int isFinal = 0;
+    	
+    	if (markingPeriod == 5) {
+    		isMidterm = 1;
+    		
+    	} else if (markingPeriod == 6) {
+    		
+    		isFinal = 1;
+    	}
+    	
+    	in.nextLine();
+    	System.out.print("\nAssignment Title: ");
+    	String title = in.nextLine();
+    	
+    	System.out.print("Point Value: ");
+		int pointValue = in.nextInt();
+		
+		while (pointValue > 100 || pointValue < 1) {
+			
+			System.out.println("Point values must be between 1 and 100.");
+			System.out.print("Point Value: ");
+			pointValue = in.nextInt();
+			
+		}
+		
+    	int assignmentId = 0;
+    	in.nextLine();
+    	String wantTo = "you want to create this assignment?";
+    	System.out.print("Are you sure you want to create this assignment? (y/n) ");
+    	String yesNo = in.nextLine();
+    	
+    	yesNo = yesNo.toLowerCase();
+    	int checked = checkYesNo(yesNo, wantTo);
+    	
+    	if(checked == -1) {
+    		
+			System.out.println("");
+			
+    	} else if (checked == 1) {
+    		
+    		int rows = PowerSchool.assignmentRows();
+    		if(rows == 0) {
+    			
+    			assignmentId = 1;
+    			
+    		} else {
+    			
+    			ArrayList<String> assignmentIds = PowerSchool.acquireAssignmentIds();
+    			String lastAssignmentId = assignmentIds.get(assignmentIds.size() - 1);
+    			assignmentId = Integer.parseInt(lastAssignmentId) + 1;
+    		}
+    		
+    		PowerSchool.addAssignment(courseId, assignmentId, markingPeriod, isMidterm, isFinal, title, pointValue);
+
+    		
+    		System.out.println("\nSuccessfully created assignment.\n");
+    	}
+    }
 
 	private int getCourseId() {
 		String courseNumber = getCourseSelectionTeacher();
 		return PowerSchool.getCourseId(courseNumber);
 	} 
 
-	private int getAssignmentId() {		
-		if (PowerSchool.getNumberOfAssignemnts() == 0) {
-			return 1;
-		} else {
-			return PowerSchool.getlastAssignmentId() + 1;
-		}
-	}
+//	private int getAssignmentId() {		
+//		if (PowerSchool.getNumberOfAssignemnts() == 0) {
+//			return 1;
+//		} else {
+//			return PowerSchool.getlastAssignmentId() + 1;
+//		}
+//	}
     
 	private void deleteAssignment() {
 		int courseId = getCourseId();
@@ -770,13 +795,10 @@ public class Application {
         	if(checked == -1) {
     			System.out.println("");
         	} else if (checked == 1) {
-        		if(PowerSchool.checkGrade(courseId, assignmentId, studentId) == -1) {
-        			PowerSchool.addAssignmentGrade(courseId, assignmentId, studentId, pointsEarned, PowerSchool.getPointValue(title), 1);
+
+        			PowerSchool.addAssignmentGrade(courseId, assignmentId, studentId, pointsEarned, PowerSchool.getPointValue(title));
             		System.out.println("\nSuccesfully entered grade.\n");
-        		} else if (PowerSchool.checkGrade(courseId, assignmentId, studentId) == 1) {
-        			PowerSchool.updateAssignmentGrade(courseId, assignmentId, studentId, pointsEarned);
-            		System.out.println("\nSuccesfully entered grade.\n");
-        		}
+
         		ArrayList<Integer> assignmentIds = PowerSchool.getAssignmentIdByMP(markingPeriod);
         		ArrayList<Double> grades = new ArrayList<Double>();
         		
