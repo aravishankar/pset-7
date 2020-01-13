@@ -147,4 +147,17 @@ public class QueryUtils {
             "SELECT * FROM courses, teachers " +
              "WHERE teachers.department_id =? AND teachers.department_id = courses.department_id "+
              "ORDER BY courses.course_id";
+    
+    public static final String GET_ASSIGNMENT_ID = 
+			 "SELECT * FROM assignments " +
+			"WHERE course_id = ? AND marking_period = ? AND title = ?";
+    
+    public static final String ADD_ASSIGNMENT = 
+    		"INSERT INTO assignments " +
+    		"VALUES(?, ?, ?, ?, ?, ?, ?)";
+    
+    public static final String GET_LAST_ASSIGNMENT_ID = 
+			"SELECT * FROM "+
+					"assignments "+
+				"ORDER BY assignment_id DESC";
 }

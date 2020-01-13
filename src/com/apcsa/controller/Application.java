@@ -498,8 +498,93 @@ public class Application {
 	}
     
     private void addAssignment() {
-		// TODO Auto-generated method stub
+    	int courseId = getCourseId();
+		int assignmentId = getAssignmentId();
+		int markingPeriod = 0;
+		int isMidterm = 0;
+		int isFinal = 0;
 		
+		System.out.println("\nChoose a marking period or exam status.\n");
+		System.out.println("[1] MP1 assignment.");
+        System.out.println("[2] MP2 assignment.");
+        System.out.println("[3] MP3 assignment.");
+        System.out.println("[4] MP4 assignment.");
+        System.out.println("[5] Midterm exam.");
+        System.out.println("[6] Final exam.");
+        System.out.print("\n::: ");
+        int selection = Utils.getInt(in, -1);
+        
+        while (selection <= 0 || selection > 6) {
+        	if (selection <= 0 || selection > 6) {
+            	System.out.println("\nInvalid Selection.");
+       	 	}
+        	
+        	System.out.println("\nChoose a marking period or exam status.\n");
+    		System.out.println("[1] MP1 assignment.");
+            System.out.println("[2] MP2 assignment.");
+            System.out.println("[3] MP3 assignment.");
+            System.out.println("[4] MP4 assignment.");
+            System.out.println("[5] Midterm exam.");
+            System.out.println("[6] Final exam.");
+            System.out.print("\n::: ");
+            selection = Utils.getInt(in, -1);                 
+        }
+        
+        switch (selection) {
+        	case 1:
+        		markingPeriod = 1;
+        		break;
+        	case 2:
+        		markingPeriod = 2;
+        		break;
+        	case 3:
+        		markingPeriod = 3;
+        		break;
+        	case 4:
+        		markingPeriod = 4;
+        		break;
+        	case 5:
+        		markingPeriod = 5;
+        		isMidterm = 1;
+        		break;
+        	case 6:
+        		markingPeriod = 6;
+        		isFinal = 1;
+        		break;
+        }
+        
+        System.out.print("\nAssignment Title: ");
+        String title = in.nextLine(); 
+        int pointValue = 0;
+        
+        do {
+	        System.out.print("Point Value: ");
+	        pointValue = Utils.getInt(in, -1);  
+	        if(pointValue < 1 || pointValue > 101) {
+	        	System.out.println("\nPoint values must be between 1 and 100.\n");
+	        }
+	        
+        } while (pointValue < 1 || pointValue > 101);
+		if (Utils.confirm(in, "\nAre you sure you want to create this assignment? (y/n) ")){
+			if (PowerSchool.addAssignment(courseId, assignmentId, markingPeriod, isMidterm, isFinal, title, pointValue) == 1) {
+				System.out.println("\nSuccessfully created assignment.");
+			} else {
+				System.out.println("\nError creating assignment.");
+			}	
+		}		
+	}
+
+	private int getCourseId() {
+		String courseNumber = getCourseSelectionTeacher();
+		return PowerSchool.getCourseId(courseNumber);
+	} 
+
+	private int getAssignmentId() {		
+		if (PowerSchool.getNumberOfAssignemnts() == 0) {
+			return 1;
+		} else {
+			return PowerSchool.getlastAssignmentId() + 1;
+		}
 	}
     
     private void deleteAssignment() {

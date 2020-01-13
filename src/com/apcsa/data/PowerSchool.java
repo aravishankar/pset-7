@@ -286,6 +286,82 @@ public class PowerSchool {
 		return courses;
 	}
     
+    public static int getCourseId(String courseNumber) {
+    	try (Connection conn = getConnection();
+                PreparedStatement stmt = conn.prepareStatement(QueryUtils.GET_COURSE_ID)) {
+
+    			stmt.setString(1, courseNumber);
+               try (ResultSet rs = stmt.executeQuery()) {
+                   if (rs.next()) {
+                       return rs.getInt("course_Id");
+                   }
+               }
+           } catch (SQLException e) {
+               e.printStackTrace();
+           }
+
+           return 0;
+    }
+    
+    public static int getAssignmentId(int courseId, int markingPeriod, String title) {
+		try (Connection conn = getConnection();
+	       		 PreparedStatement stmt = conn.prepareStatement(QueryUtils.GET_ASSIGNMENT_ID)) {
+				
+				conn.setAutoCommit(false);
+				stmt.setInt(1, courseId);
+	            stmt.setInt(2, markingPeriod); 
+	            stmt.setString(3, title); 
+	            
+	            try (ResultSet rs = stmt.executeQuery()) {
+
+	           		return rs.getInt(2);                 
+	            }
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+			
+			return 0;
+	}
+    
+    public static int addAssignment(int courseId, int assignmentId, int markingPeriod, int isMidterm, int isFinal, String title, int pointValue) {
+    	try (Connection conn = getConnection();
+           	 PreparedStatement stmt = conn.prepareStatement(QueryUtils.ADD_ASSIGNMENT)) {
+               
+    		   conn.setAutoCommit(false);
+               stmt.setInt(1, courseId);
+               stmt.setInt(2, assignmentId);
+               stmt.setInt(3, markingPeriod);
+               stmt.setInt(4, isMidterm);
+               stmt.setInt(5, isFinal);
+               stmt.setString(6, title);
+               stmt.setInt(7, pointValue);
+
+               if (stmt.executeUpdate() == 1) {
+                   conn.commit();
+                   return 1;
+               } else {
+                   conn.rollback();
+                   return -1;
+               }
+           } catch (SQLException e) {
+               return -1;
+           }
+    }
+    
+    public static int getlastAssignmentId() {
+		try (Connection conn = getConnection();
+	       		 PreparedStatement stmt = conn.prepareStatement(QueryUtils.GET_LAST_ASSIGNMENT_ID)) {    
+	            try (ResultSet rs = stmt.executeQuery()) {
+	           	 if(rs.next()) {
+	                    return rs.getInt("assignment_id");             
+	           	 }
+	            }
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+		return 0;
+	}
+    
     public static void changePassword(String username, String password) {
         try (Connection conn = getConnection()) {
             int isChanged = updatePassword(conn, username, Utils.getHash(password));
