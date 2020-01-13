@@ -60,6 +60,10 @@ public class Teacher extends User {
         return departmentName;
     }
     
+    public String getDepartmentId() {
+        return departmentId;
+    }
+    
     /**
      * Retrieves the student's name formatted as LAST, FIRST.
      * 

@@ -482,6 +482,28 @@ public class Application {
     
     private void viewEnrollmentByCourse() {
 		// TODO Auto-generated method stub
+    	
+    	String courseNo = "";
+    	
+		try {
+			courseNo = getCourseSelection();
+		} catch(SQLException e) {
+		}
+		
+		ArrayList<Student> students = PowerSchool.getStudentsByCourse(courseNo);
+    	
+    	if (students.isEmpty()) {
+            System.out.println("\nNo students to display.");
+        } else {
+            System.out.println();
+            
+            int i = 1;
+            for (Student student : students) {
+                System.out.println(i++ + ". " + student.getName() + " / " + standardizeGPA(student));
+            } 
+            
+            
+        }
 		
 	}
     
