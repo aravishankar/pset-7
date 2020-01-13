@@ -481,16 +481,8 @@ public class Application {
     }
     
     private void viewEnrollmentByCourse() {
-		// TODO Auto-generated method stub
-    	
-    	String courseNo = "";
-    	
-		try {
-			courseNo = getCourseSelection();
-		} catch(SQLException e) {
-		}
-		
-		ArrayList<Student> students = PowerSchool.getStudentsByCourse(courseNo);
+    	String courseNumber = getCourseSelectionTeacher();
+		ArrayList<Student> students = PowerSchool.getStudentsByCourse(courseNumber);
     	
     	if (students.isEmpty()) {
             System.out.println("\nNo students to display.");
@@ -501,8 +493,6 @@ public class Application {
             for (Student student : students) {
                 System.out.println(i++ + ". " + student.getName() + " / " + standardizeGPA(student));
             } 
-            
-            
         }
 		
 	}
@@ -654,6 +644,28 @@ public class Application {
 			}
 		}
 		return isValid;
+	}
+    
+    private String getCourseSelectionTeacher() {
+    	Teacher teacher = PowerSchool.getTeacher(activeUser);
+		ArrayList<String> courses = PowerSchool.getCourses(teacher.getDepartmentId());
+		System.out.println();		 
+		System.out.println("Choose a course.\n");		 
+        int courseSelection = -1;
+        
+        while(courseSelection <= 0 || courseSelection > courses.size()) {
+        	int j = 1;
+        	for (String i: courses) {
+                System.out.println("["+ j++ + "] " + i);
+            }
+	       	System.out.print("\n::: ");
+	       	courseSelection = Utils.getInt(in, -1);
+	       	
+	       	if(courseSelection <= 0 || courseSelection > courses.size()) {
+	       		System.out.println("\nInvalid Selection.\n");
+	       	}
+        }
+		return courses.get(courseSelection-1);
 	}
     
     /////// ALL USER METHODS //////////////////////////////////////////////////////////////

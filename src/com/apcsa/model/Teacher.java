@@ -60,7 +60,7 @@ public class Teacher extends User {
         return departmentName;
     }
     
-    public String getDepartmentId() {
+    public int getDepartmentId() {
         return departmentId;
     }
     

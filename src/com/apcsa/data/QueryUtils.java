@@ -142,4 +142,9 @@ public class QueryUtils {
     	        "INNER JOIN courses ON course_grades.course_id = courses.course_id " +
     	        "INNER JOIN students ON students.student_id = course_grades.student_id " +
     	        "WHERE students.student_id = ?";
+    
+    public static final String GET_COURSES =
+            "SELECT * FROM courses, teachers " +
+             "WHERE teachers.department_id =? AND teachers.department_id = courses.department_id "+
+             "ORDER BY courses.course_id";
 }
