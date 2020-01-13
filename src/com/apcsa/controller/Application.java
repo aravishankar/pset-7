@@ -14,7 +14,6 @@ public class Application {
     private Scanner in;
     private User activeUser;
     
-    enum RootAction { PASSWORD, DATABASE, LOGOUT, SHUTDOWN }
     enum AdministratorAction { FACULTY, DEPARTMENT, STUDENTS, GRADE, COURSE, PASSWORD, LOGOUT }
     enum TeacherAction { ENROLLMENT, ADD, DELETE, GRADE, PASSWORD, LOGOUT }
     enum StudentAction { COURSE, ASSIGNMENT, PASSWORD, LOGOUT }
