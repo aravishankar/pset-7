@@ -876,7 +876,7 @@ public class Application {
         while (activeUser != null) {
             switch (getStudentMenuSelection()) {
                 case COURSE: viewCourseGrades(); break;
-                case ASSIGNMENT: viewAssignmentGradesByCourse(in); break;
+                case ASSIGNMENT: viewAssignmentGradesByCourse(); break;
                 case PASSWORD: changePassword(false); break;
                 case LOGOUT: logout(); break;
                 default: System.out.println("\nInvalid selection."); break;
@@ -909,15 +909,70 @@ public class Application {
         return null;
     }
 	
-	private void viewCourseGrades() {
-		// TODO Auto-generated method stub
-		
-	}
+	public void viewCourseGrades() {
+    	int studentId = PowerSchool.getStudentIdByUserId(activeUser);
+    	ArrayList<Integer> courseIds = PowerSchool.getCourseIdWithStudentId(studentId);
+    	ArrayList<String> courses = PowerSchool.getCourseName(activeUser, courseIds);
+    	ArrayList<String> courseGrades = PowerSchool.getCourseGrade(PowerSchool.getStudentIdByUserId(activeUser), courseIds);
+    	System.out.println("");
+    	
+    	for(int i = 0; i <= courseGrades.size()-1; i++) {
+    		System.out.println((i + 1) + ". " + courses.get(i) + " / " + courseGrades.get(i));
+    	}
+    	System.out.println("");
+    }
 
-	private void viewAssignmentGradesByCourse(Scanner in) {
-	// TODO Auto-generated method stub
-		
-	}
+	public void viewAssignmentGradesByCourse() {
+    	System.out.println("\nChoose a course.\n");
+    	int studentId = PowerSchool.getStudentIdByUserId(activeUser);
+    	ArrayList<Integer> courseIds = PowerSchool.getCourseIdWithStudentId(studentId);
+    	ArrayList<String> courses = PowerSchool.getCourseNumberWithCourseId(activeUser, courseIds);
+    	for(int i = 0; i <= courses.size()-1; i++) {
+    		System.out.println("[" + (i + 1) + "] " + courses.get(i));
+    	}
+    	System.out.print("\n::: ");
+    	int courseSelection = in.nextInt();
+    	if(courseSelection < 1 || courseSelection > courses.size()) {
+    		while(courseSelection < 1 || courseSelection > courses.size()) {
+    			System.out.println("\nInvalid selection.\n");
+    			System.out.println("Choose a course.\n");
+    			for(int i = 0; i <= courses.size()-1; i++) {
+    	    		System.out.println("[" + (i + 1) + "] " + courses.get(i));
+    	    	}
+    	    	System.out.print("\n::: ");
+    	    	courseSelection = in.nextInt();
+    		}
+    	}
+    	int courseId = courseIds.get(courseSelection-1);
+    	printMarkingPeriods();
+    	int markingPeriod = in.nextInt();
+    	if(markingPeriod < 1 || markingPeriod > 6) {
+    		while(markingPeriod < 1 || markingPeriod > 6) {
+    			System.out.println("\nInvalid selection.");
+    			printMarkingPeriods();
+    	    	markingPeriod = in.nextInt();
+    		}
+    	}
+    	
+    	ArrayList<String> titles = PowerSchool.getAssignmentTitle(courseId, markingPeriod);
+    	if(titles.isEmpty()) {
+    		System.out.println("\nThere are no assignments in this class and marking period.\n");
+    	} else {
+    		
+    		System.out.println("");
+    		String currentGrade = "";
+    		for(int i = 0; i <= titles.size()-1; i++) {
+    			int assignmentId = PowerSchool.getAssignmentIdFromTitlePlus(titles.get(i), courseId, markingPeriod);
+    			if(PowerSchool.previousGrade(courseId, assignmentId, studentId) == -1) {
+        			currentGrade = "--";
+        		} else {
+        			currentGrade = String.valueOf(PowerSchool.previousGrade(courseId, assignmentId, studentId));
+        		}
+    			System.out.println((i + 1) + ". " + titles.get(i) + " / " + currentGrade + " (out of " + PowerSchool.getPointValue(titles.get(i)) + " pts)");
+        	}
+        	System.out.println("");
+    	}
+    }
     
     /////// SECONDARY MENUS ///////////////////////////////////////////////////////////////
     
@@ -1024,6 +1079,17 @@ public class Application {
         }
 		return courses.get(courseSelection-1);
 	}
+    
+    public void printMarkingPeriods() {
+    	System.out.println("\nChoose a marking period or exam status.\n");
+    	System.out.println("[1] MP1 assignment.");
+    	System.out.println("[2] MP2 assignment.");
+    	System.out.println("[3] MP3 assignment.");
+    	System.out.println("[4] MP4 assignment.");
+    	System.out.println("[5] Midterm exam.");
+    	System.out.println("[6] Final exam.");
+    	System.out.print("\n::: ");
+    }
     
     /////// ALL USER METHODS //////////////////////////////////////////////////////////////
     

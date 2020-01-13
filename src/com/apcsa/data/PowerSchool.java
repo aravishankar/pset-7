@@ -1072,6 +1072,188 @@ public class PowerSchool {
            return 1;
     }
     
+    public static int getStudentIdByUserId(User activeUser) {
+    	try (Connection conn = getConnection();
+     			PreparedStatement stmt = conn.prepareStatement(QueryUtils.GET_STUDENT_ID_BY_USER_ID)) {
+     			
+    			stmt.setInt(1,  activeUser.getUserId());
+    			try (ResultSet rs = stmt.executeQuery()) {
+     				while (rs.next()) {
+     					return rs.getInt("student_id");
+     				}
+     			}	
+     		return -1;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+     	return -1;
+    }
+    
+    public static ArrayList<Integer> getCourseIdWithStudentId(int studentId) {
+    	ArrayList<Integer> resultList = new ArrayList<Integer>();
+    	try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(QueryUtils.GET_COURSE_ID_WITH_STUDENT_ID)) {
+    		stmt.setInt(1, studentId);
+
+    		try (ResultSet rs = stmt.executeQuery()) {
+        	   while (rs.next()) {
+        		   resultList.add(rs.getInt("course_id"));
+        	   }
+        	   return resultList;
+        	   
+    		}
+    	} catch (SQLException e) {
+    		e.printStackTrace();
+        }
+    	return resultList;
+    }
+    
+    public static ArrayList<String> getCourseName(User activeUser, ArrayList<Integer> courseIds) {
+    	ArrayList<String> courses = new ArrayList<String>();
+     	try (Connection conn = getConnection();
+     			PreparedStatement stmt = conn.prepareStatement(QueryUtils.GET_COURSE_NAME)) {
+     			for(int i = 0; i <= courseIds.size()-1; i++) {
+     				stmt.setInt(1, courseIds.get(i));
+     				
+     				try (ResultSet rs = stmt.executeQuery()) {
+     					while (rs.next()) {
+                  		   String result = rs.getString("title");
+                  		   courses.add(result);
+     					}
+     				}
+     			}
+     			return courses;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+     	return courses;
+     }
+    
+    public static ArrayList<String> getCourseNumberWithCourseId(User activeUser, ArrayList<Integer> courseIds) {
+    	ArrayList<String> courses = new ArrayList<String>();
+     	try (Connection conn = getConnection();
+     			PreparedStatement stmt = conn.prepareStatement(QueryUtils.GET_COURSE_NUMBER_WITH_COURSE_ID)) {
+     			for(int i = 0; i <= courseIds.size()-1; i++) {
+     				stmt.setInt(1, courseIds.get(i));
+     				
+     				try (ResultSet rs = stmt.executeQuery()) {
+     					while (rs.next()) {
+                  		   String result = rs.getString("course_no");
+                  		   courses.add(result);
+     					}
+     				}
+     			}
+     			return courses;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+     	return courses;
+     }
+    
+    public static ArrayList<String> getCourseGrade(int studentId, ArrayList<Integer> courseIds) {
+    	ArrayList<String> courseGrades = new ArrayList<String>();
+     	try (Connection conn = getConnection();
+     			PreparedStatement stmt = conn.prepareStatement(QueryUtils.GET_COURSE_GRADE)) {
+     			
+     			for(int i = 0; i < courseIds.size(); i++) {
+     				stmt.setInt(1, courseIds.get(i));
+     				stmt.setInt(2, studentId);
+     				
+     				try (ResultSet rs = stmt.executeQuery()) {
+     					while (rs.next()) {
+                  		   String result = rs.getString("grade");
+
+                  		   if(result == null) {
+                  			 courseGrades.add("--");
+                  		   }else {
+                  			 courseGrades.add(result);
+                  		   }
+     					}
+     				}
+     			}
+     			return courseGrades;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+     	return courseGrades;
+     }
+    
+    public static ArrayList<String> getAssignmentTitle(int courseId, int markingPeriod) {
+    	ArrayList<String> title = new ArrayList<String>();
+     	try (Connection conn = getConnection();
+     			PreparedStatement stmt = conn.prepareStatement(QueryUtils.GET_ASSIGNMENT_TITLE)) {
+     			
+     				stmt.setInt(1, courseId);
+     				stmt.setInt(2, markingPeriod);
+     				
+     				try (ResultSet rs = stmt.executeQuery()) {
+     					while (rs.next()) {
+                  		 title.add(rs.getString("title"));
+     					}
+     				}
+     			return title;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+     	return title;
+     }
+    
+    public static int getAssignmentIdFromTitlePlus(String title, int courseId, int markingPeriod) {
+    	try (Connection conn = getConnection();
+     			PreparedStatement stmt = conn.prepareStatement(QueryUtils.GET_ASSIGNMENT_ID_FROM_TITLE_PLUS)) {
+     			
+    			stmt.setString(1,  title);
+    			stmt.setInt(2,  courseId);
+    			stmt.setInt(3,  markingPeriod);
+    			try (ResultSet rs = stmt.executeQuery()) {
+     				while (rs.next()) {
+     					return rs.getInt("assignment_id");
+     				}
+     			}	
+     		return -1;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+     	return -1;
+    }
+    
+    public static int previousGrade(int courseId, int assignmentId, int studentId) {
+    	try (Connection conn = getConnection();
+    			PreparedStatement stmt = conn.prepareStatement(QueryUtils.PREVIOUS_GRADE)) {
+                  
+    		stmt.setInt(1, courseId);
+    		stmt.setInt(2, assignmentId);
+    		stmt.setInt(3, studentId);
+    		try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("points_earned");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return -1;
+    }
+    
+    public static int getPointValue(String title) {
+    	try (Connection conn = getConnection();
+    			PreparedStatement stmt = conn.prepareStatement(QueryUtils.GET_POINT_VALUE)) {
+                  
+    		stmt.setString(1, title);
+    		
+    		try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("point_value");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return 1;
+    }
+    
     /////// PRIVATE METHODS ///////////////////////////////////////////////////////////////
 
     /*

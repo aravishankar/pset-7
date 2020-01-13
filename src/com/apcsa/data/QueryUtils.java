@@ -306,5 +306,47 @@ public class QueryUtils {
 	    				"WHERE assignment_id = ? " +
 	    				"AND course_id = ?";
         
+        public static final String GET_STUDENT_ID_BY_USER_ID =
+        		"SELECT student_id FROM students " +
+        				"WHERE user_id = ?";
+        
+        public static final String GET_COURSE_NAME = 
+        		"SELECT title FROM courses " + 
+        				"WHERE course_id = ?";
+        
+        public static final String GET_COURSE_GRADE =
+        		"SELECT grade FROM course_grades " +
+        				"WHERE course_id = ?" +
+        				"AND student_id = ?";
+        
+        public static final String GET_COURSE_ID_WITH_STUDENT_ID =
+        		"SELECT course_id FROM course_grades " +
+        			"WHERE student_id = ?";
+        
+        public static final String GET_COURSE_NUMBER_WITH_COURSE_ID = 
+        		"SELECT course_no FROM courses " +
+        				"WHERE course_id = ?";
+        
+        public static final String GET_ASSIGNMENT_TITLE =
+        		"SELECT title FROM assignments " +
+        				"WHERE course_id = ?" +
+        				"AND marking_period = ?";
+        
+        public static final String GET_ASSIGNMENT_ID_FROM_TITLE_PLUS =
+        		"SELECT assignment_id FROM assignments " +
+        				"WHERE title = ?" +
+        				"AND course_id = ?" +
+        				"AND marking_period = ?";
+        
+        public static final String PREVIOUS_GRADE = 
+        		"SELECT points_earned FROM assignment_grades " +
+        				"WHERE course_id = ?" +
+        				"AND assignment_id = ?" +
+        				"AND student_id = ?";
+        
+        public static final String GET_POINT_VALUE =
+        		"SELECT point_value FROM assignments " +
+        				"WHERE title = ?";
+        
         
 }
