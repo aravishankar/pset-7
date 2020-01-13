@@ -348,5 +348,50 @@ public class QueryUtils {
         		"SELECT point_value FROM assignments " +
         				"WHERE title = ?";
         
+        public static final String GET_COURSE_ID_FROM_DEPARTMENT_ID = 
+        		"SELECT course_id FROM courses " +
+        				"WHERE course_no = ?";
+        
+        public static final String GET_COURSE_ID_FROM_COURSE_NO =
+        		"SELECT course_id FROM courses " +
+        				"WHERE course_no = ?";
+        
+        public static final String GET_STUDENT_ID_FROM_COURSE_ID =
+        		"SELECT student_id FROM course_grades " +
+        				"WHERE course_id = ?";
+        
+        
+        public static final String GET_STUDENTS_BY_STUDENT_ID = 
+        		"SELECT first_name, last_name, gpa FROM students " +
+        				"WHERE student_id = ?";
+        
+        public static final String GET_STUDENTS_FIRST_NAMES = 
+        		"SELECT first_name FROM students " +
+        				"WHERE student_id = ?";
+        
+        public static final String GET_STUDENTS_LAST_NAMES = 
+        		"SELECT last_name FROM students " +
+        				"WHERE student_id = ?";
+        
+        public static final String ROWS_IN_ASSIGNMENT_GRADES =
+        		"SELECT count(*) FROM assignment_grades ";
+        
+        public static final String FIND_GRADE =
+        		"SELECT is_graded FROM assignment_grades " + 
+        				"WHERE course_id = ? " + 
+        				"AND assignment_id = ? " +
+        				"AND student_id = ?";
+        
+        public static final String ADD_ASSIGNMENT_GRADE =
+        		"INSERT INTO assignment_grades " +
+        		    "VALUES(?, ?, ?, ?, ?, ?)";
+        
+        public static final String UPDATE_ASSIGNMENT_GRADE = 
+        		"UPDATE assignment_grades " +
+        				"SET points_earned = ? " +
+        				"WHERE course_id = ?" +
+        				"AND assignment_id = ?" +
+        				"AND student_id = ?";
+        
         
 }
